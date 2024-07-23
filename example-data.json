@@ -1,0 +1,112 @@
+{   
+    "prompts": [
+        {
+            "Prompt": "Please create a new webpage. The content should be based on the following data. Please write your response as HTML for this page, styled with tailwindcss version 3.4.4, with it including tailwind using the cdn. Please respond in JSON according to the provided structure. Please write out proper copy for the page to the best of your abilities. Thank you!",
+            "Client Name": "Saltwinds Financial",
+            "Meta Description": "Saltwinds Financial offers group benefits in Halifax. We provide employee benefits, group insurance, and employee benefits programs. Contact us today!",
+            "Page Title": "Group Benefits Halifax | Employee Benefits | Saltwinds Financial",
+            "Main Keyword": "employee benefits",
+            "Secondary Keywords": [
+                "employee insurance",
+                "group benefits",
+                "employee benefits program",
+                "what are group benefits",
+                "group insurance benefits to employees"
+            ],
+            "Page Sections": [
+                "Hero",
+                "Intro",
+                {
+                    "We Offer": [
+                        "Group Health & Dental Plans",
+                        "Group Retirement & Pension",
+                        "Individual Pension Plans (IPP)",
+                        "Business insurance solutions"
+                    ]
+                },
+                "Why Choose Us",
+                "Related Blog Posts",
+                "FAQ"
+            ],
+            "Page URL": "https://saltwindsfinancial.ca/group-benefits/",
+            "Service Details": {
+                "Group Health & Dental Plans": {
+                    "Description": "We offer group health and dental plans to help you attract and retain top talent. Our plans are customizable to meet the unique needs of your employees.",
+                    "CTA": "Get a Quote"
+                },
+                "Group Retirement & Pension": {
+                    "Description": "Our group retirement and pension plans help your employees save for the future. We offer a range of investment options to suit every risk tolerance.",
+                    "CTA": "Learn More"
+                },
+                "Individual Pension Plans (IPP)": {
+                    "Description": "An IPP is a retirement savings plan that allows business owners to save more for retirement than traditional RRSPs. We can help you set up an IPP for your business.",
+                    "CTA": "Get Started"
+                },
+                "Business insurance solutions": {
+                    "Description": "We offer a range of business insurance solutions to protect your company from unexpected events. Our insurance experts can help you find the right coverage for your business.",
+                    "CTA": "Request a Quote"
+                }
+            },
+            "Client Website": "https://saltwindsfinancial.ca",
+            "Similar Pages": [
+                "https://bauldinsurance.com/business-insurance/group-benefits/",
+                "https://equisgroup.ca/group-benefits/"
+            ],
+            "Response JSON Structure": "{'analysis and comments': 'Add whatever comments and suggestions you would like to make about the provided data here.', 'html': 'Your HTML response here'}"
+        },
+        {
+            "Prompt": "Please create a new webpage. The content should be based on the following data. Please write your response as unstyled HTML for this page. Please respond in JSON according to the provided structure. Please write out proper copy for the page to the best of your abilities. Thank you!",
+            "Client Name": "Saltwinds Financial",
+            "Meta Description": "Saltwinds Financial offers group benefits in Halifax. We provide employee benefits, group insurance, and employee benefits programs. Contact us today!",
+            "Page Title": "Group Benefits Halifax | Employee Benefits | Saltwinds Financial",
+            "Main Keyword": "employee benefits",
+            "Secondary Keywords": [
+                "employee insurance",
+                "group benefits",
+                "employee benefits program",
+                "what are group benefits",
+                "group insurance benefits to employees"
+            ],
+            "Page Sections": [
+                "Hero",
+                "Intro",
+                {
+                    "We Offer": [
+                        "Group Health & Dental Plans",
+                        "Group Retirement & Pension",
+                        "Individual Pension Plans (IPP)",
+                        "Business insurance solutions"
+                    ]
+                },
+                "Why Choose Us",
+                "Related Blog Posts",
+                "FAQ"
+            ],
+            "Page URL": "https://saltwindsfinancial.ca/group-benefits/",
+            "Service Details": {
+                "Group Health & Dental Plans": {
+                    "Description": "We offer group health and dental plans to help you attract and retain top talent. Our plans are customizable to meet the unique needs of your employees.",
+                    "CTA": "Get a Quote"
+                },
+                "Group Retirement & Pension": {
+                    "Description": "Our group retirement and pension plans help your employees save for the future. We offer a range of investment options to suit every risk tolerance.",
+                    "CTA": "Learn More"
+                },
+                "Individual Pension Plans (IPP)": {
+                    "Description": "An IPP is a retirement savings plan that allows business owners to save more for retirement than traditional RRSPs. We can help you set up an IPP for your business.",
+                    "CTA": "Get Started"
+                },
+                "Business insurance solutions": {
+                    "Description": "We offer a range of business insurance solutions to protect your company from unexpected events. Our insurance experts can help you find the right coverage for your business.",
+                    "CTA": "Request a Quote"
+                }
+            },
+            "Client Website": "https://saltwindsfinancial.ca",
+            "Similar Pages": [
+                "https://bauldinsurance.com/business-insurance/group-benefits/",
+                "https://equisgroup.ca/group-benefits/"
+            ],
+            "Response JSON Structure": "{'analysis and comments': 'Add whatever comments and suggestions you would like to make about the provided data here.', 'html': 'Your HTML response here'}"
+        }
+    ]
+}

@@ -1,0 +1,37 @@
+﻿Prompts For Creation Service, Page
+1. Could you please create SEO content for service page
+
+Content Creation
+1. Could you please create SEO content for product page
+
+
+Section Modifications
+1. Make another 3 the same sections
+2. Make the section more sounds like human
+3. Change voice of tone to
+4. Make the section longer
+
+
+5. Make the section shorter
+6. Can you make 3 similar sections to this
+
+
+General Prompts:
+1. Keep going with next section
+
+
+Tone of Voice:
+1. Can you make tone of voice more conversational
+
+
+Meta Title:
+1. Can you make meta title for this content
+
+Headers:
+
+Optimize the provided text for SEO with properly formatted headings (H1, H2, H3) and subheadings.
+Instructions:
+1. Format the text with the following structure:
+   * Title as H1
+   * Main sections as H2
+   * Subsections as H3
