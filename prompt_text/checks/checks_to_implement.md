@@ -34,7 +34,7 @@ Check and Fix
    - Make changes if needed to keep the original message clear
 
 Explain Changes (if needed)
-   - after you have done changing explain where you implemeted the changes 
+   - after you have done changing explain where you implemented the changes 
 
 Output Format:
 - Give a quick summary of what you changed and how it affects the text
@@ -42,7 +42,7 @@ Output Format:
 
 
 
-If contend is over complecated:
+# If contend is overcomplicated:
 Simplify Complex Content Without Oversimplifying
 
 Purpose:
@@ -98,4 +98,4 @@ Simplified: "We need to carefully check our current work methods. This will help
 Remember: The goal is to make the content clearer and more accessible, not to dumb it down. Keep the core message and important details, just present them in a more straightforward way.
 
 
-
+testing testing lsdfjasljkdalsjkghasdkjfghjksdhgkjalsdfhgjlhgasdjgasdfkjghaskasdgh
