@@ -128,8 +128,24 @@ def groq(model: str, prompt: str) -> str:
     if response.status_code == 200:
         return json_response['choices'][0]['message']['content']
     else:
+        # 
+        for 
         pprint.pprint(f"Error: {response.status_code}, {response.text}")
         return response.text
+
+def mixtral8x7b(prompt: str) -> str:
+    '''
+        Sends a prompt to Groq's mixtral 8x7b model and returns the response
+    '''
+
+    return groq("mixtral-8x7b-32768", prompt)
+
+def gemma2_9b(prompt: str) -> str:
+    '''
+        Sends a prompt to Groq's gemma 2 9b model and returns the response
+    '''
+
+    return groq("gemma2-9b-it", prompt)
 
 def llama3_8b(prompt: str) -> str:
     '''
@@ -145,16 +161,23 @@ def llama3_70b(prompt: str) -> str:
     
     return groq("llama3-70b-8192", prompt)
 
-def mixtral8x7b(prompt: str) -> str:
+def llama3_1_8b(prompt: str) -> str:
     '''
-        Sends a prompt to Groq's mixtral 8x7b model and returns the response
-    '''
-
-    return groq("mixtral-8x7b-32768", prompt)
-
-def gemma2_9b(prompt: str) -> str:
-    '''
-        Sends a prompt to Groq's gemma 2 9b model and returns the response
+        Sends a prompt to Groq's llama 3 8b model and returns the response
     '''
 
-    return groq("gemma2-9b-it", prompt)
+    return groq("llama-3.1-8b-instant", prompt)
+
+def llama3_1_70b(prompt: str) -> str:
+    '''
+        Sends a prompt to Groq's llama 3 70b model and returns the response
+    '''
+    
+    return groq("llama-3.1-70b-versatile", prompt)
+
+def llama3_1_405b(prompt: str) -> str:
+    '''
+        Sends a prompt to Groq's llama 3 8b model and returns the response
+    '''
+
+    return groq("llama-3.1-405b-reasoning", prompt)
