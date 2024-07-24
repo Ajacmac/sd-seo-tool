@@ -34,7 +34,7 @@ Instructions:
    - Make changes if needed to keep the original message clear
 
 5. Explain Changes (if needed)
-   - after you have done changing explain where you implemeted the changes 
+   - after you have done changing explain where you implemented the changes 
 
 Output Format:
 - Give a quick summary of what you changed and how it affects the text
@@ -42,7 +42,7 @@ Output Format:
 
 
 
-# If contend is over complecated:
+# If content is overcomplicated:
 Simplify Complex Content Without Oversimplifying
 
 Purpose:
@@ -102,9 +102,6 @@ Remember: The goal is to make the content clearer and more accessible, not to du
 can you come up with more seed keywords for this service 
 
 
-
-
-
 # Identify Negative Keywords From Keyword List
 
 Purpose:
@@ -151,8 +148,6 @@ Steps:
 8. Create Your Negative Keyword List
    - Compile all identified negative keywords
    - Group them by theme or reason for exclusion
-
-
 
 
 
