@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal Analysis Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        .pulse {
+            animation: pulse 1s infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+    </style>
+    <!--
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('appData', () => ({
+                inputText: '',
+                result: '',
+                loading: false,
+                parsedResult: {},
+                debugMode: false,
+                consoleLog: [],
+                currentStage: '',
+                jobId: null,
+                stageProgress: {
+                    initialInput: false,
+                    keywordFetching: false,
+                    keywordRanking: false,
+                    keywordClustering: false,
+                    bestClusterSelection: false,
+                    htmlGeneration: false
+                },
+                pipelineStages: [
+                    { name: 'Initial Input', key: 'initialInput' },
+                    { name: 'Keyword Fetching', key: 'keywordFetching' },
+                    { name: 'Keyword Ranking', key: 'keywordRanking' },
+                    { name: 'Keyword Clustering', key: 'keywordClustering' },
+                    { name: 'Best Cluster Selection', key: 'bestClusterSelection' },
+                    { name: 'HTML Generation', key: 'htmlGeneration' }
+                ],
+                get overallProgress() {
+                    return Object.values(this.stageProgress).filter(Boolean).length / this.pipelineStages.length * 100;
+                },
+                async submitForm() {
+                    this.loading = true;
+                    this.result = '';
+                    this.parsedResult = {};
+                    this.consoleLog = [];
+                    this.currentStage = 'Starting analysis...';
+                    Object.keys(this.stageProgress).forEach(key => this.stageProgress[key] = false);
+                    
+                    try {
+                        const response = await fetch('/start_job', { method: 'POST' });
+                        const data = await response.json();
+                        this.jobId = data.job_id;
+                        this.startHeartbeat();
+                    } catch (error) {
+                        console.error('Error starting job:', error);
+                        this.loading = false;
+                    }
+                },
+                startHeartbeat() {
+                    const heartbeat = setInterval(async () => {
+                        try {
+                            const response = await fetch(`/heartbeat/${this.jobId}`);
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            const contentType = response.headers.get("content-type");
+                            const responseText = await response.text(); // Get the response as text
+                            
+                            console.log("Response content:", responseText); // Log the raw response
+
+                            let data;
+                            if (contentType && contentType.includes("application/json")) {
+                                try {
+                                    data = JSON.parse(responseText);
+                                } catch (error) {
+                                    throw new Error("Failed to parse JSON response");
+                                }
+                            } else {
+                                throw new Error("Oops! We haven't received a JSON response");
+                            }
+
+                            this.updateProgress(data);
+                            this.logToConsole(`Heartbeat: ${new Date().toISOString()}`);
+                            
+                            if (data.stages_completed === this.pipelineStages.length) {
+                                clearInterval(heartbeat);
+                                this.loading = false;
+                                this.currentStage = 'Analysis complete';
+                                this.logToConsole('Analysis completed');
+                            }
+                        } catch (error) {
+                            console.error('Error in heartbeat:', error);
+                            this.logToConsole(`Error in heartbeat: ${error.message}`);
+                            clearInterval(heartbeat);
+                            this.loading = false;
+                            this.currentStage = 'Error occurred';
+                        }
+                    }, 1000);
+                },
+                updateProgress(data) {
+                    this.parsedResult = data.data;
+                    this.result = JSON.stringify(this.parsedResult);
+                    this.pipelineStages.forEach((stage, index) => {
+                        this.stageProgress[stage.key] = index < data.stages_completed;
+                    });
+                    if (data.stages_completed > 0 && data.stages_completed <= this.pipelineStages.length) {
+                        this.currentStage = `Processing: ${this.pipelineStages[data.stages_completed - 1].name}`;
+                    }
+                },
+                logToConsole(message) {
+                    this.consoleLog.push(`[${new Date().toLocaleTimeString()}] ${message}`);
+                    if (this.consoleLog.length > 100) this.consoleLog.shift(); // Keep log size manageable
+                }
+            }));
+        });
+    </script>
+    -->
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('appData', () => ({
+                formData: {
+                    pageType: 'service',
+                    companyName: '',
+                    companyUrl: '',
+                    companyDescription: '',
+                    seedKeywords: '',
+                    locations: [''],
+                    pageUrl: '',
+                    pageTitle: '',
+                    pageInfo: '',
+                    pageUsp: '',
+                    isNewPage: true
+                },
+                result: '',
+                loading: false,
+                parsedResult: {},
+                debugMode: false,
+                consoleLog: [],
+                currentStage: '',
+                jobId: null,
+                stageProgress: {
+                    initialInput: false,
+                    keywordFetching: false,
+                    keywordRanking: false,
+                    keywordClustering: false,
+                    bestClusterSelection: false,
+                    htmlGeneration: false
+                },
+                pipelineStages: [
+                    { name: 'Initial Input', key: 'initialInput' },
+                    { name: 'Keyword Fetching', key: 'keywordFetching' },
+                    { name: 'Keyword Ranking', key: 'keywordRanking' },
+                    { name: 'Keyword Clustering', key: 'keywordClustering' },
+                    { name: 'Best Cluster Selection', key: 'bestClusterSelection' },
+                    { name: 'HTML Generation', key: 'htmlGeneration' }
+                ],
+                get overallProgress() {
+                    return Object.values(this.stageProgress).filter(Boolean).length / this.pipelineStages.length * 100;
+                },
+                addLocation() {
+                    this.formData.locations.push('');
+                },
+                removeLocation(index) {
+                    this.formData.locations.splice(index, 1);
+                },
+                async submitForm() {
+                    this.loading = true;
+                    this.result = '';
+                    this.parsedResult = {};
+                    this.jobId = null;
+
+                    try {
+                        const dataToSubmit = {
+                            ...this.formData,
+                            locations: JSON.stringify(this.formData.locations),
+                            seedKeywords: this.formData.seedKeywords.split(',').map(kw => kw.trim())
+                        };
+
+                        const response = await fetch('/submission', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(dataToSubmit)
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            console.error('Submission error:', errorData);
+                            throw new Error(`HTTP error! status: ${response.status} ${errorData.message || ''}`);
+                        }
+
+                        const data = await response.json();
+                        this.jobId = data.job_id;
+                        this.startHeartbeat();
+                    } catch (error) {
+                        console.error('Error starting job:', error);
+                        this.loading = false;
+                        this.logToConsole(`Error starting job: ${error.message}`);
+                    }
+                },
+                startHeartbeat() {
+                    const maxAttempts = 300; // Stop after 5 minutes (300 * 1 second)
+                    let attempts = 0;
+
+                    const heartbeat = setInterval(async () => {
+                        try {
+                            if (attempts >= maxAttempts) {
+                                this.stopHeartbeat('Job processing timed out');
+                                clearInterval(heartbeat);
+                                return;
+                            }
+
+                            const response = await fetch(`/heartbeat/${this.jobId}`);
+                            
+                            if (response.status === 404) {
+                                this.stopHeartbeat('Job not found or expired');
+                                clearInterval(heartbeat);
+                                return;
+                            }
+
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`);
+                            }
+
+                            const data = await response.json();
+                            this.updateProgress(data);
+                            this.logToConsole(`Heartbeat: ${new Date().toISOString()}`);
+                            
+                            if (data.stages_completed === this.pipelineStages.length) {
+                                this.stopHeartbeat('Analysis complete');
+                                clearInterval(heartbeat);
+                                return;
+                            }
+                        } catch (error) {
+                            console.error('Error in heartbeat:', error);
+                            this.stopHeartbeat('Error occurred', error);
+                            clearInterval(heartbeat);
+                            return;
+                        }
+
+                        attempts++;
+                    }, 1000);
+                },
+
+                stopHeartbeat(message, error = null) {
+                    this.heartbeat = null;
+                    this.loading = false;
+
+                    if (error) {
+                        this.currentStage = 'Error occurred';
+                        this.logToConsole(`Heartbeat error: ${error.message}`);
+                    } else {
+                        this.currentStage = message;
+                        this.logToConsole(message);
+                    }
+                },
+
+                updateProgress(data) {
+                    this.parsedResult = data.data;
+                    this.result = JSON.stringify(this.parsedResult);
+                    this.pipelineStages.forEach((stage, index) => {
+                        this.stageProgress[stage.key] = index < data.stages_completed;
+                    });
+                    if (data.stages_completed > 0 && data.stages_completed <= this.pipelineStages.length) {
+                        this.currentStage = `Processing: ${this.pipelineStages[data.stages_completed - 1].name}`;
+                    }
+                },
+                logToConsole(message) {
+                    this.consoleLog.push(`[${new Date().toLocaleTimeString()}] ${message}`);
+                    if (this.consoleLog.length > 100) this.consoleLog.shift(); // Keep log size manageable
+                },
+                copyDebugLogs() {
+                    const logText = this.consoleLog.join('\n');
+                    navigator.clipboard.writeText(logText).then(() => {
+                        alert('Debug logs copied to clipboard!');
+                    }, (err) => {
+                        console.error('Could not copy text: ', err);
+                    });
+                },
+                fillTestData() {
+                    this.formData = {
+                        pageType: 'product',
+                        companyName: 'Eastern MFG.',
+                        companyUrl: 'https://easternmfg.ca/',
+                        companyDescription: 'Eastern Manufacturing is a manufacturer of trailers for orchards and farms',
+                        seedKeywords: 'Apple bin carrier, Fruit bin carrier, Vegetable bin carrier',
+                        locations: ['3069 Brooklyn St, Aylesford, NS B0P 1C0'],
+                        pageUrl: 'https://easternmfg.ca/apple-bin-trailer',
+                        pageTitle: 'Apple Bin Trailer',
+                        pageInfo: 'this is a trailer for orchard/apple bins that orchards use to collect and move fruit',
+                        pageUsp: 'The trailers are extra rugged and last longer than competing trailers, improving ROI for orchard operators.',
+                        isNewPage: true
+                    };
+                }
+            }));
+        });
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans">
+    <div class="w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8" x-data="appData">
+        <main class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="flex flex-col lg:flex-row">
+                <!-- Left Column -->
+                <section class="w-full lg:w-1/3 p-6 bg-gray-50 border-b lg:border-b-0 lg:border-r border-gray-200">
+                    <h2 class="text-2xl font-semibold mb-4 text-gray-800">Input Form</h2>
+                    <form @submit.prevent="submitForm" class="space-y-4">
+                        <div>
+                            <label for="pageType" class="block text-sm font-medium text-gray-700 mb-1">Page Type</label>
+                            <select id="pageType" x-model="formData.pageType" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500">
+                                <option value="service">Service Page</option>
+                                <option value="product">Product Page</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="companyName" class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                            <input id="companyName" type="text" x-model="formData.companyName" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500" placeholder="Enter company name">
+                        </div>
+                        
+                        <div>
+                            <label for="companyUrl" class="block text-sm font-medium text-gray-700 mb-1">Company URL</label>
+                            <input id="companyUrl" type="url" x-model="formData.companyUrl" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500" placeholder="https://example.com">
+                        </div>
+                        
+                        <div>
+                            <label for="companyDescription" class="block text-sm font-medium text-gray-700 mb-1">Company Description</label>
+                            <textarea id="companyDescription" x-model="formData.companyDescription" rows="3" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500" placeholder="Describe your company"></textarea>
+                        </div>
+                        
+                        <div>
+                            <label for="seedKeywords" class="block text-sm font-medium text-gray-700 mb-1">Seed Keywords</label>
+                            <input id="seedKeywords" type="text" x-model="formData.seedKeywords" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500" placeholder="keyword1, keyword2, keyword3">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Locations
+                                <span class="text-xs text-gray-500 ml-1 cursor-help" title="Add one or more locations">(?)</span>
+                            </label>
+                            <template x-for="(location, index) in formData.locations" :key="index">
+                                <div class="flex items-center mb-2">
+                                    <input type="text" x-model="formData.locations[index]" class="flex-grow mr-2 px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500" :placeholder="`Location ${index + 1}`">
+                                    <button @click="removeLocation(index)" type="button" class="text-red-500">&times;</button>
+                                </div>
+                            </template>
+                            <button @click="addLocation" type="button" class="text-blue-500">+ Add Location</button>
+                        </div>
+                    
+                        <div>
+                            <label for="pageUrl" class="block text-sm font-medium text-gray-700 mb-1">Page URL</label>
+                            <input id="pageUrl" type="url" x-model="formData.pageUrl" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500" placeholder="https://example.com/page">
+                        </div>
+                        
+                        <div>
+                            <label for="pageTitle" class="block text-sm font-medium text-gray-700 mb-1">Page Title</label>
+                            <input id="pageTitle" type="text" x-model="formData.pageTitle" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500" placeholder="Enter page title">
+                        </div>
+                        
+                        <div>
+                            <label for="pageInfo" class="block text-sm font-medium text-gray-700 mb-1">Page Information</label>
+                            <textarea id="pageInfo" x-model="formData.pageInfo" rows="4" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500" placeholder="Describe the purpose of this page, target audience, and any specific details about the product/service"></textarea>
+                        </div>
+                        
+                        <div>
+                            <label for="pageUsp" class="block text-sm font-medium text-gray-700 mb-1">Unique Selling Proposition (USP)</label>
+                            <input id="pageUsp" type="text" x-model="formData.pageUsp" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500" placeholder="What makes your product/service unique?">
+                        </div>
+                        
+                        <div>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" x-model="formData.isNewPage" class="form-checkbox h-5 w-5 text-blue-600">
+                                <span class="ml-2 text-gray-700">This is a new page (not replacing an existing one)</span>
+                            </label>
+                        </div>
+                    
+                        <div class="flex justify-center">
+                            <button type="submit" class="w-full sm:w-1/2 lg:w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out" :class="{ 'opacity-50 cursor-not-allowed': loading }" :disabled="loading">
+                                <span x-show="!loading">Generate Page</span>
+                                <span x-show="loading">Processing...</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Status Indicators -->
+                    <div class="mt-8 space-y-4">
+                        <!-- Simple Pulsing Dot -->
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 rounded-full" :class="{'bg-green-500 pulse': loading, 'bg-gray-300': !loading}"></div>
+                            <span x-text="loading ? 'Processing' : 'Idle'" class="text-sm text-gray-600"></span>
+                        </div>
+                        
+                        <!-- Status Text with Spinner -->
+                        <div x-show="loading" class="flex items-center space-x-2">
+                            <div class="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full spin"></div>
+                            <span x-text="currentStage" class="text-sm text-gray-600"></span>
+                        </div>
+                        
+                        <!-- Stages Completion Indicator -->
+                        <div class="space-y-2">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-blue-600 h-2.5 rounded-full" :style="`width: ${overallProgress}%`"></div>
+                            </div>
+                            <div class="flex justify-between">
+                                <template x-for="stage in pipelineStages" :key="stage.key">
+                                    <div class="w-4 h-4 rounded-full" :class="{'bg-blue-500': stageProgress[stage.key], 'bg-gray-300': !stageProgress[stage.key]}"></div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Debug Mode Toggle -->
+                    <div class="mt-4">
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" x-model="debugMode" class="form-checkbox h-5 w-5 text-blue-600">
+                            <span class="ml-2 text-gray-700">Debug Mode</span>
+                        </label>
+                    </div>
+
+                    <div x-show="debugMode" class="mt-4">
+                        <button @click="fillTestData" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+                            Fill Test Data
+                        </button>
+                    </div>
+                </section>
+                <!-- Right Column -->
+                <section class="w-full lg:w-2/3 xl:w-3/4 p-6 overflow-y-auto max-h-screen">
+                    <h2 class="text-2xl font-semibold mb-4 text-gray-800">Analysis Results</h2>
+                    <div x-show="!result && !loading" class="text-gray-500 italic mb-4">
+                        Submit the form to see analysis results here.
+                    </div>
+                    <div x-show="loading" class="text-blue-500 mb-4">
+                        Analyzing... Please wait.
+                    </div>
+                    <div x-show="result" class="space-y-4">
+                        <template x-for="(stage, index) in pipelineStages" :key="stage.name">
+                            <div x-show="parsedResult[stage.key]" :class="{ 'bg-gray-50': index % 2 === 0, 'bg-white': index % 2 !== 0 }" class="p-4 border-b border-gray-200 last:border-b-0">
+                                <h3 class="text-lg font-semibold mb-2" x-text="stage.name"></h3>
+                                <div class="text-sm">
+                                    <template x-if="stage.key === 'initialInput'">
+                                        <div>
+                                            <p><strong>Company Profile:</strong> <span x-text="parsedResult[stage.key]?.companyProfile"></span></p>
+                                            <p><strong>Starter Keywords:</strong> <span x-text="parsedResult[stage.key]?.starterKeywords?.join(', ')"></span></p>
+                                            <p><strong>Page to Make:</strong> <span x-text="parsedResult[stage.key]?.pageToMake"></span></p>
+                                        </div>
+                                    </template>
+                                    <template x-if="stage.key === 'keywordFetching'">
+                                        <ul class="list-disc list-inside">
+                                            <template x-for="keyword in parsedResult[stage.key]?.fetchedKeywords" :key="keyword">
+                                                <li x-text="keyword"></li>
+                                            </template>
+                                        </ul>
+                                    </template>
+                                    <template x-if="stage.key === 'keywordRanking'">
+                                        <ul class="space-y-1">
+                                            <template x-for="item in parsedResult[stage.key]?.rankedKeywords" :key="item.keyword">
+                                                <li>
+                                                    <span x-text="item.keyword"></span>: 
+                                                    <span class="font-semibold" x-text="item.score.toFixed(2)"></span>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </template>
+                                    <template x-if="stage.key === 'keywordClustering'">
+                                        <div>
+                                            <template x-for="cluster in parsedResult[stage.key]?.clusters" :key="cluster.name">
+                                                <div class="mb-2">
+                                                    <p class="font-semibold" x-text="cluster.name"></p>
+                                                    <ul class="list-disc list-inside pl-4">
+                                                        <template x-for="keyword in cluster.keywords" :key="keyword">
+                                                            <li x-text="keyword"></li>
+                                                        </template>
+                                                    </ul>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                    <template x-if="stage.key === 'bestClusterSelection'">
+                                        <div>
+                                            <p><strong>Selected Cluster:</strong> <span x-text="parsedResult[stage.key]?.selectedCluster"></span></p>
+                                            <p><strong>Keywords:</strong> <span x-text="parsedResult[stage.key]?.keywords?.join(', ')"></span></p>
+                                            <p><strong>Reason:</strong> <span x-text="parsedResult[stage.key]?.reason"></span></p>
+                                        </div>
+                                    </template>
+                                    <template x-if="stage.key === 'htmlGeneration'">
+                                        <div>
+                                            <p class="mb-2">Generated HTML:</p>
+                                            <pre class="bg-gray-100 p-2 rounded overflow-x-auto"><code x-text="parsedResult[stage.key]?.generatedHTML"></code></pre>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Console-style Log (Debug Mode) -->
+                    <div x-show="debugMode" class="mt-8">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-lg font-semibold">Debug Console</h3>
+                            <button @click="copyDebugLogs" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                Copy Logs
+                            </button>
+                        </div>
+                        <div class="bg-gray-900 text-green-400 p-4 rounded-lg h-64 overflow-y-auto font-mono text-sm">
+                            <template x-for="(log, index) in consoleLog" :key="index">
+                                <div x-text="log"></div>
+                            </template>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

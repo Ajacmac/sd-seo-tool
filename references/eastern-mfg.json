@@ -1,0 +1,19 @@
+{
+    "company_name": "Eastern MFG",
+    "company_url": "https://easternmfg.ca",
+    "company_description": "Eastern Manufacturing is a manufacturer of trailers for orchards and farms.",
+    "current_pages": [
+        {
+            "name": "apple_bin_trailer",
+            "type": "product",
+            "link": "https://easternmfg.ca/apple-bin-trailer",
+            "info": "this is a trailer for orchard/apple bins that orchards use to collect and move fruit"
+        },
+        {
+            "name": "fruit_bin_trailer",
+            "type": "product",
+            "link": "https://easternmfg.ca/fruit-bin-trailer",
+            "info": "this is a trailer for fruit bins that orchards use to collect and move fruit"
+        }
+    ]
+}

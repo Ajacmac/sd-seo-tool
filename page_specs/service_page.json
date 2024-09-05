@@ -1,0 +1,42 @@
+{
+    "basic": [
+        {
+            "name": "hero",
+            "path": "prompt_text/sections/hero_section.md"
+        },
+        {
+            "name": "intro",
+            "path": "prompt_text/sections/intro_section.md"
+        },
+        {
+            "name": "we_offer",
+            "path": "prompt_text/sections/we_offer_section.md"
+        },
+        {
+            "name": "why_choose_us",
+            "path": "prompt_text/sections/why_choose_us_section.md"
+        },
+        {
+            "name": "faq",
+            "path": "prompt_text/sections/faq_section.md"
+        }
+    ],
+    "slim": [
+        {
+            "name": "hero",
+            "path": "prompt_text/sections/hero_section.md"
+        },
+        {
+            "name": "intro",
+            "path": "prompt_text/sections/intro_section.md"
+        },
+        {
+            "name": "why_choose_us",
+            "path": "prompt_text/sections/why_choose_us_section.md"
+        },
+        {
+            "name": "faq",
+            "path": "prompt_text/sections/faq_section.md"
+        }
+    ]
+}

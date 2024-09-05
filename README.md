@@ -18,6 +18,8 @@ FIXME: get example inputs and outputs for each of these
 - Website structure (sitemap: what pages should be on the site and how they should be linked)
 - Writing page content
 
+FIXME: remember to stop dropping the db tables when the logic is confirmed to work
+
 
 
 - Keyword research
@@ -145,6 +147,23 @@ TODO: Take each prompt for generating content and have sonnet generate a checkli
     - Big companies want to appeal to everyone
     - Small companies want to appeal more strongly to a narrower group of people
     - Using a theme should make the output more similar to non-corporate text in the training data of the model so should help avoid corporate language in the output as a consequence
+  
+  TODO: Idea for onboarding form data -> page generation
+    - embedding model embeds all of the data from the onboarding form
+      - each question gets checked for length
+        - short enough question text & answer text pairs are embedded together
+        - longer ones get chunked and embedded (probably q & a1, ... , q & aN)
+    - cosine similarity and other similarity scores get used to decide which data is needed
+        for which pages and page sections, so we can keep the text passed to the model shorter
+        in case all the needed text doesn't fit
+  
+  TODO: Automatic page planning and keyword:page mapping
+    - Acquire massive list of candidate keywords (10k or more is great)
+    - Rank them by similarity to primary offerings from client
+    - Cluster the most similar keywords automatically using hierarchical clustering or similar
+    - Have LM decide what intent and page type each cluster would be best suited for
+    - Add the search volume data and determine which pages should actually get made
+
 
 ## Weird autocompletes from copilot
 

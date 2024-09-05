@@ -1,4 +1,12 @@
-fastapi
+fastapi[all]
+authlib
+httpx
 uvicorn
 requests
-python-dotenv
+sentence-transformers>=3.0.0
+torch>=1.11.0
+scipy
+jsonschema
+pyjwt
+psutil
+tenacity

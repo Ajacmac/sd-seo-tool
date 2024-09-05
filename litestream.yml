@@ -1,0 +1,12 @@
+access-key-id: ${AWS_ACCESS_KEY_ID}
+secret-access-key: ${AWS_SECRET_ACCESS_KEY}
+
+dbs:
+  - path: /volume/db/keyword_cache.db
+    replicas:
+      - url: s3://${BUCKET_NAME}/db/keyword_cache.db
+        endpoint: ${AWS_ENDPOINT_URL_S3}
+  - path: /volume/db/client_jobs.db
+    replicas:
+      - url: s3://${BUCKET_NAME}/db/client_jobs.db
+        endpoint: ${AWS_ENDPOINT_URL_S3}
